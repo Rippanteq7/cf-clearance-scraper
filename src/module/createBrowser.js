@@ -8,10 +8,10 @@ async function createBrowser() {
         // console.log('Launching the browser...');
 
         const { browser } = await connect({
-            headless: false,
+            headless: !false,
             turnstile: true,
             connectOption: { defaultViewport: null },
-            disableXvfb: false,
+            disableXvfb: !false,
         })
 
         // console.log('Browser launched');
