@@ -41,10 +41,10 @@ app.post('/cf-clearance-scraper', async (req, res) => {
 
     if (process.env.SKIP_LAUNCH != 'true' && !global.browser) return res.status(500).json({ code: 500, message: 'The scanner is not ready yet. Please try again a little later.' })
 
-    var result = { code: 500 }
+    let result = { code: 500 }
 
+  try {
     global.browserLength++
-
     switch (data.mode) {
         case "source":
             result = await getSource(data).then(res => { return { source: res, code: 200 } }).catch(err => { return { code: 500, message: err.message } })
@@ -59,10 +59,12 @@ app.post('/cf-clearance-scraper', async (req, res) => {
             result = await wafSession(data).then(res => { return { ...res, code: 200 } }).catch(err => { return { code: 500, message: err.message } })
             break;
     }
-
+  } catch (e) {
+    console.log(e)
+  } finally {
     global.browserLength--
-
     res.status(result.code ?? 500).send(result)
+  }
 })
 
 app.use((req, res) => { res.status(404).json({ code: 404, message: 'Not Found' }) })
